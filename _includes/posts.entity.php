@@ -10,6 +10,14 @@ function insertmember($id,$tid,$fullname,$first_phone,$second_phone,$third_phone
 	}	
 }
 
+
+function generateLastExecutionLogs(){
+	$edate = date('Y-m-d');
+	$etime = date('H:i:s');
+	dbExecute("INSERT INTO sailstrails_time_logs(execution_date,execution_time, status) VALUES ('".$edate."','".$etime."','1");
+	return true;
+}
+
 function BackupAgents($id,$tid,$email,$fullname,$first_phone,$second_phone,$third_phone,$company_phone,$source1,$source2,$source3,$status_1)
 {
 	dbExecute("INSERT INTO backup_agents (id,tid,email,fullname,first_phone,second_phone,third_phone,company_phone,source1,source2,source3,status_1) 

@@ -11,12 +11,17 @@ function Recorgzit(){
 	$date = new DateTime();
 	//Create a DateInterval object with P1D.
 	$interval = new DateInterval('P1D');
-	//Add a day onto the current date.
-	$date->add($interval);
+	//Add a day onto the current date.	
+  $date->add($interval);
 	//Tommorrow's Date :
-        $tommorrow = $date->format("Y-m-d")."T00:00:00.000Z";
+
+
+  $tommorrow = $date->format("Y-m-d")."T00:00:00.000Z";
 	//Today's Date:
 	$today= date("Y-m-d")."T00:00:00.000Z";
+
+
+  /* FETCH DATA FROM SAILSTRAIL BASED ON TWO DATES */
 
 	$curlf = curl_init();			
  	curl_setopt_array($curlf, array(
@@ -32,13 +37,12 @@ function Recorgzit(){
 		  'Authorization: Basic MGU4YjY0OTAtNDliZi00YTdhLWE5NzUtYTQxYTViMWM3YWMzOnFRcEp5VkZ2eExpdG93SDZqZ3pqS2hZTzh1c1gzd21oUnE5RTk0OU1hSThUTkZseXRVMmh2R0JvMXBHemNrWHk='
         ),
     ));
-
     $response = curl_exec($curlf);
-    $data = json_decode($response,true);      
-      
-    //echo '<BR>SAILSTRAIL RESPONSE CHECK <BR><pre>';
-    //print_r($data);
-    //exit;
+    $data = json_decode($response,true);
+
+    /* Create Last Execution Logs from Sailstrail API */
+    generateLastExecutionLogs($response);
+
 	  curl_close($curlf);
           $counter=0;
           $agentcalls=0;
@@ -57,16 +61,20 @@ function Recorgzit(){
             /* CHECKING AGENT IS EXIST IN SAILSTRAILS AGENT TABLE */
 
             $received = findAgent($phone);
-            //echo '<BR>Is Agent in Agent Table of Sailstrail Tbl => <pre>';print_r($received);
+
+            //Check is Agent in Agent Table of Sailstrail Tbl
 
             if($received)
             {
 
               foreach($received as $row2 => $receivedCl)
               { 
+                
+                $client_phone = ltrim(trim($column["userPhone"]), "0");
                 /* CHECKING CLIENT IS EXIST IN SAILSTRAILS CLIENT TABLE */
-                $client_phone = ltrim(trim($column["userPhone"]), "0");                
                 $foundedClient = findClient($client_phone);
+
+
                 // Is Client in Client Table of Sailstrail Tbl
                 if($foundedClient > 0){
                     //$foundedClient = findClient($client_phone);                
